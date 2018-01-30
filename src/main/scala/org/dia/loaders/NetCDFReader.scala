@@ -20,6 +20,7 @@ package org.dia.loaders
 import org.slf4j.Logger
 import ucar.nc2.NetcdfFile
 import ucar.nc2.dataset.NetcdfDataset
+import ucar.nc2.Attribute
 
 import org.dia.utils.NetCDFUtils
 
@@ -72,6 +73,24 @@ object NetCDFReader {
       list ++= List(k)
     }
     list
+  }
+
+  /**
+    * Gets just the attribute names and values of a NetCDF at some URI.
+    *
+    * @param uri where the NetCDF file is located
+    * @return
+    */
+  def loadNetCDFAttr(uri: String): Map[String, String] = {
+    val netcdfFile = NetCDFUtils.loadNetCDFDataSet(uri)
+    val attrs = netcdfFile.getGlobalAttributes
+    /** We have to be mutable here because vars is a Java list which has no map function. */
+    var map = scala.collection.mutable.Map[String, String]()
+    for (i <- 0 until attrs.size) {
+      val k = attrs.get(i).getShortName
+      map += (k -> netcdfFile.findGlobalAttribute(k).getStringValue)
+    }
+    map.toMap
   }
 
   /**

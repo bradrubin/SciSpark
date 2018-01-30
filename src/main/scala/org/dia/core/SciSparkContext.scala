@@ -206,7 +206,8 @@ class SciSparkContext (@transient val sparkContext: SparkContext) extends Serial
         })
       }
       val sciT = new SciTensor(variableHashTable)
-      sciT.insertDictionary(("SOURCE", p))
+      // sciT.insertDictionary(("SOURCE", p))
+      sciT.insertDictionary(loadNetCDFAttr(p).toList: _*)
       sciT
     })
     rdd
@@ -262,7 +263,8 @@ class SciSparkContext (@transient val sparkContext: SparkContext) extends Serial
         variableHashTable += ((y, absT))
       })
       val sciT = new SciTensor(variableHashTable)
-      sciT.insertDictionary(("SOURCE", p._1))
+      // sciT.insertDictionary(("SOURCE", p._1))
+      sciT.insertDictionary(loadNetCDFAttr(p._1).toList: _*)
       sciT
     })
     rdd
@@ -356,7 +358,8 @@ class SciSparkContext (@transient val sparkContext: SparkContext) extends Serial
       val doubleArray = readMergBytetoJavaArray(byteArray, offset, shape)
       val absT = new BreezeTensor(doubleArray, shape)
       val sciT = new SciTensor("TMP", absT)
-      sciT.insertDictionary(("SOURCE", p._1))
+      //sciT.insertDictionary(("SOURCE", p._1))
+      sciT.insertDictionary(loadNetCDFAttr(p._1).toList: _*)
       sciT
     })
     rdd
